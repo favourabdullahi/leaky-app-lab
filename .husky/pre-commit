@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "🔍 Scanning for secrets before commit..."
+npx detect-secrets scan --baseline .secrets.baseline
+
