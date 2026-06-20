@@ -55,15 +55,6 @@ az --version         # any recent version
 python --version     # 3.x
 ```
 
-**Verify Azure CLI session is active:**
-
-```bash
-az account show
-# Returns your subscription name, user email, and state: Enabled
-# If session expired: az login
-```
-
----
 
 ## 📁 Project Structure
 
@@ -109,15 +100,14 @@ leaky-app-lab/
 
 ### Step 1 — Create the Fake App with Hardcoded Secrets
 
-This simulates the **bad state** — a realistic developer mistake that happens every day in production environments.
+This simulates the **bad state** —.
 
 **Initialise the project:**
 
 ```bash
-mkdir leaky-app && cd leaky-app
-git init
-npm init -y
-```<img width="908" height="132" alt="image" src="https://github.com/user-attachments/assets/389f79ea-b921-4e6a-9fc3-01783e779232" />
+```
+<img width="631" height="125" alt="image" src="https://github.com/user-attachments/assets/f7028bd4-66ca-46fa-9ef5-d5b7a450517e" />
+
 
 
 **Create `.gitignore` before anything else** (critical — prevents node_modules from being staged):
@@ -126,9 +116,12 @@ npm init -y
 echo node_modules/ > .gitignore
 ```
 
-**Create `app.js` in VS Code** 
+**Create `app.js` in VS Code**
+
 
 ```
+
+
 
 **Stage only the files you need** — never use `git add .` before verifying .gitignore:
 
@@ -136,6 +129,7 @@ echo node_modules/ > .gitignore
 git add app.js package.json .gitignore
 git commit -m "initial app setup"
 ```
+<img width="538" height="290" alt="image" src="https://github.com/user-attachments/assets/9b7b5156-3e5a-434f-abbd-c1ed8230ff27" />
 
 > ✅ **Step 1 Complete** — fake fintech app created with 4 exposed credentials representing a Paystack key, database password, Azure storage key, and JWT secret.
 
@@ -145,7 +139,6 @@ git commit -m "initial app setup"
 
 **Create a new public repo on GitHub:**
 
-1. Go to [github.com/new](https://github.com/new)
 2. Repository name: `leaky-app-lab`
 3. Description: `add yours`
 4. Visibility: **Public**
@@ -153,15 +146,7 @@ git commit -m "initial app setup"
 6. Click **Create repository**
 
 **Connect your local repo and push:**
-
-```bash
-git remote add origin https://github.com/YOUR_USERNAME/leaky-app-lab.git
-git branch -M main
-git push --set-upstream origin main
-```
-
-> GitHub will prompt for your username and a **Personal Access Token** as password.
-> Generate one at: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → tick **repo** scope → Generate token.
+<img width="552" height="292" alt="image" src="https://github.com/user-attachments/assets/accbb4c8-3f13-4aec-8e6c-65ca962fa637" />
 
 **Enable GitHub secret scanning:**
 
@@ -178,6 +163,7 @@ git push --set-upstream origin main
 5. Choose **leaky-app-lab** from the list
 6. Click **Install & Authorize**
 7. You will be redirected back to GitGuardian — repo now appears under Perimeter
+<img width="345" height="302" alt="image" src="https://github.com/user-attachments/assets/e90cf167-7f06-411e-b1d6-ee3814f2b321" />
 
 > ✅ **Step 2 Complete** — code is on GitHub, Push Protection is active, GitGuardian is connected and monitoring the repository.
 
@@ -189,13 +175,10 @@ git push --set-upstream origin main
 
 GitHub Push Protection will block the push immediately:
 
-```
-remote: Push cannot contain secrets.
-! [remote rejected] main -> main (push declined due to repository rule violations)
-error: failed to push some refs to 'https://github.com/YOUR_USERNAME/leaky-app-lab.git'
-```
+<img width="482" height="269" alt="image" src="https://github.com/user-attachments/assets/d9886ea2-7e71-4f5b-904e-6a06d099b114" />
 
 **To bypass for lab purposes:**
+
 
 The terminal will display an unblock URL like:
 ```
@@ -206,6 +189,7 @@ https://github.com/YOUR_USERNAME/leaky-app-lab/security/secret-scanning/unblock-
 2. On the page that opens, select **"It's used in tests"** as the reason
 3. Click **Allow secret**
 4. Return to terminal and run `git push` again — it will go through this time
+<img width="504" height="274" alt="image" src="https://github.com/user-attachments/assets/a4517f9d-9b35-4539-928a-2775a476108d" />
 
 **Trigger a GitGuardian scan:**
 
@@ -217,15 +201,8 @@ https://github.com/YOUR_USERNAME/leaky-app-lab/security/secret-scanning/unblock-
 **Check for incidents:**
 
 Go to **Internal monitoring → Internal secret incidents** in the left sidebar.
+<img width="696" height="288" alt="image" src="https://github.com/user-attachments/assets/a1389b88-d9c7-408e-9bb6-4a994512b8b6" />
 
-Expected results:
-
-| Incident | Secret Type | Severity | File | Date |
-|---|---|---|---|---|
-| 1 | Stripe Keys | Unknown | app.js | Today |
-| 2 | Generic Password | **High** ⚠️ | app.js | Today |
-
-The repository will show status: **At Risk** 🔴
 
 > ✅ **Step 3 Complete** — GitGuardian detected 2 incidents from `app.js`. Screenshot the incidents page as evidence. This proves the scanner flags secrets before they can cause damage.
 
@@ -235,39 +212,13 @@ The repository will show status: **At Risk** 🔴
 
 **Replace the entire contents of `app.js`** with this clean version (remove all hardcoded credentials):
 
-```javascript
-const { getSecret } = require("./keyvault");
+<img width="549" height="202" alt="image" src="https://github.com/user-attachments/assets/f9c5ea5b-b5f5-496b-a866-03c3cd4d6100" />
 
-async function chargeCustomer(email, amount) {
-  const PAYSTACK_SECRET_KEY = await getSecret("PAYSTACK-SECRET-KEY");
-
-  const response = await fetch("https://api.paystack.co/transaction/initialize", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, amount }),
-  });
-  return response.json();
-}
-
-module.exports = { chargeCustomer };
-```
 
 **Purge the secret from Git history** — critical step because GitHub still stores the old commit containing the secret:
 
-```bash
-# Install git-filter-repo
-pip install git-filter-repo
+<img width="882" height="148" alt="image" src="https://github.com/user-attachments/assets/d136bf64-5fb2-4f47-adbd-a408e3f6b4c9" />
 
-# Replace the secret value across all commits in history
-git filter-repo --replace-text <(echo \
-  'sk_live_abc123fakePaystackKeyForLabPurposes9999==>REMOVED')
-
-# Force push the rewritten history
-git push --force
-```
 
 **Commit and push the clean version:**
 
@@ -285,27 +236,9 @@ git push
 
 ### Step 5 — Store Secrets in Azure Key Vault
 
-**Verify your Azure CLI session is active:**
-
-```bash
-az account show
-# Expected output: subscription name, user email, state: Enabled
-# If session has expired: az login
-```
-
 **Create a resource group and Key Vault:**
 
-```bash
-az group create \
-  --name leaky-app-rg \
-  --location westeurope
-
-az keyvault create \
-  --name leaky-app-vault-001 \
-  --resource-group leaky-app-rg \
-  --location westeurope \
-  --sku standard
-```
+<img width="856" height="188" alt="image" src="https://github.com/user-attachments/assets/d79f4a33-9eb6-458b-adc2-d9476d12c4e1" />
 
 **Store each secret in the vault:**
 
@@ -340,6 +273,7 @@ az keyvault set-policy \
 ```bash
 az keyvault secret list --vault-name leaky-app-vault-001 -o table
 ```
+<img width="786" height="202" alt="image" src="https://github.com/user-attachments/assets/3b5387a5-e34d-4983-b516-41c591a4bdaf" />
 
 > ✅ **Step 5 Complete** — all 3 secrets stored in Azure Key Vault. Access policy grants only `get` and `list` permissions — no write, delete, or admin access.
 
@@ -348,35 +282,14 @@ az keyvault secret list --vault-name leaky-app-vault-001 -o table
 ### Step 6 — Update the App to Fetch Secrets at Runtime
 
 **Install the Azure SDK packages:**
+<img width="680" height="184" alt="image" src="https://github.com/user-attachments/assets/f495e909-5c4c-4cc9-952f-3da4a8bc5a8c" />
 
-```bash
-npm install @azure/keyvault-secrets @azure/identity
-```
 
 **Create `keyvault.js`** — the runtime secret helper:
+<img width="708" height="303" alt="image" src="https://github.com/user-attachments/assets/ce57e8b8-b92a-4beb-9c32-e4d859f7a691" />
 
 ```javascript
-const { SecretClient } = require("@azure/keyvault-secrets");
-const { DefaultAzureCredential } = require("@azure/identity");
-
-const vaultUrl = "https://leaky-app-vault-001.vault.azure.net/";
-const credential = new DefaultAzureCredential();
-const client = new SecretClient(vaultUrl, credential);
-
-async function getSecret(secretName) {
-  const secret = await client.getSecret(secretName);
-  return secret.value;
-}
-
-module.exports = { getSecret };
-```
-
 **Commit the helper and updated dependencies:**
-
-```bash
-git add keyvault.js package.json package-lock.json
-git commit -m "feat: add Azure Key Vault secret helper"
-git push
 ```
 
 > `DefaultAzureCredential` automatically uses your active `az login` session in development and a Managed Identity in production — no credentials needed in the code at all.
@@ -396,26 +309,12 @@ grep -rn "sk_live\|password\|secret\|api_key" . \
 ```
 
 **Create `test.js`** to confirm the Key Vault fetch works end-to-end:
+<img width="781" height="265" alt="image" src="https://github.com/user-attachments/assets/c80c9a31-7145-48f3-bbeb-c3c636cc6ae6" />
 
-```javascript
-const { getSecret } = require("./keyvault");
-
-(async () => {
-  try {
-    const key = await getSecret("PAYSTACK-SECRET-KEY");
-    console.log("✅ Secret fetched successfully. Length:", key.length);
-  } catch (err) {
-    console.error("❌ Failed to fetch secret:", err.message);
-  }
-})();
-```
 
 **Run the test:**
+<img width="944" height="172" alt="image" src="https://github.com/user-attachments/assets/8f627320-1c4d-441e-ad33-0bcb6d3c8ab3" />
 
-```bash
-node test.js
-# Expected output: ✅ Secret fetched successfully. Length: 42
-```
 
 > ✅ **Step 7 Complete** — grep returns nothing (no secrets in source), and the app successfully retrieves credentials from Key Vault at runtime.
 
@@ -424,46 +323,26 @@ node test.js
 ### Step 8 — Add Pre-commit Hook to Block Future Leaks
 
 **Install the tools:**
+<img width="786" height="256" alt="image" src="https://github.com/user-attachments/assets/0de0cad8-c422-4b1a-835e-68e0737606f7" />
 
-```bash
-npm install --save-dev husky detect-secrets
-npx husky init
-```
 
 **Create the pre-commit hook** — edit `.husky/pre-commit` to contain:
+<img width="545" height="253" alt="image" src="https://github.com/user-attachments/assets/257071e5-9eb1-441e-a009-0d459adc22d6" />
 
-```bash
-#!/bin/sh
-echo "🔍 Scanning for secrets before commit..."
-npx detect-secrets scan --baseline .secrets.baseline
-if [ $? -ne 0 ]; then
-  echo "❌ Secrets detected. Commit blocked."
-  exit 1
-fi
-echo "✅ No secrets found. Proceeding with commit."
-```
 
 ```bash
 chmod +x .husky/pre-commit
 ```
 
 **Initialise the clean baseline** so detect-secrets knows what the current clean state looks like:
+<img width="928" height="145" alt="image" src="https://github.com/user-attachments/assets/1d750a45-96f3-4c95-9a25-2a9d087d5c55" />
 
-```bash
-npx detect-secrets scan > .secrets.baseline
-git add .secrets.baseline .husky/
-git commit -m "add: pre-commit secret scanning hook"
-git push
-```
+<img width="890" height="206" alt="image" src="https://github.com/user-attachments/assets/ad66146a-30d8-4b4e-b9d6-e7415e028b42" />
+
 
 **Test that the hook works — try to commit a fake secret:**
+<img width="645" height="298" alt="image" src="https://github.com/user-attachments/assets/3d4f38e6-bfde-4d9e-9bc9-cca8b1b32d0a" />
 
-```bash
-echo 'const BAD_KEY = "sk_live_testblockedkey123"' > bad.js
-git add bad.js && git commit -m "test blocked commit"
-# Expected: ❌ Secrets detected. Commit blocked.
-rm bad.js
-```
 
 > ✅ **Step 8 Complete** — any future commit containing a secret pattern is automatically blocked at the developer's machine before it can reach GitHub.
 
@@ -471,19 +350,8 @@ rm bad.js
 
 ### Step 9 — Configure Alerts for New Exposures
 
-**GitGuardian real-time alerts:**
 
-1. Log into [app.gitguardian.com](https://app.gitguardian.com)
-2. Go to **Notifications** in the left sidebar
-3. Enable **Email alerts** for real-time incident notifications
-4. Optional: Go to **Integrations** → **Slack** to post alerts to your team channel
-
-**GitHub secret scanning email notifications:**
-
-1. Go to your repo → **Settings** → **Security** → **Code security and analysis**
-2. Enable **Email notifications for secret scanning alerts**
-
-**Optional — Azure Monitor diagnostic logging on the Key Vault:**
+** Azure Monitor diagnostic logging on the Key Vault:**
 
 ```bash
 az monitor diagnostic-settings create \
@@ -492,10 +360,13 @@ az monitor diagnostic-settings create \
   --logs '[{"category":"AuditEvent","enabled":true}]' \
   --workspace YOUR_LOG_ANALYTICS_WORKSPACE_ID
 ```
+<img width="645" height="298" alt="image" src="https://github.com/user-attachments/assets/13133629-fa55-4841-95c3-fb2e56c8f0f6" />
+<img width="671" height="291" alt="image" src="https://github.com/user-attachments/assets/e32dd1af-da89-40bc-8a59-c2f22f768f0a" />
 
 This logs every read, write, and access attempt on the Key Vault to Azure Monitor — useful for detecting unusual access patterns.
 
 > ✅ **Step 9 Complete** — security team will receive immediate notifications whenever a new secret exposure is detected in any future commit or push.
+<img width="774" height="300" alt="image" src="https://github.com/user-attachments/assets/5d997a11-4c96-44a1-8f31-a0bf768fb1a2" />
 
 ---
 
@@ -540,25 +411,7 @@ All real issues encountered during this live lab session, documented for referen
 | T-08 | Azure CLI session concern after laptop was off for 24 hours | Azure CLI token cache may expire after periods of inactivity | Ran `az account show` — session was still active. If it had expired, `az login` would re-authenticate in under a minute |
 | T-09 | Could not find GitGuardian Integrations menu to connect GitHub | GitGuardian onboarding flow uses a different entry point than expected | The correct button is **"Connect a source"** (blue button) on the Get Started page — not a separate Integrations menu item |
 
----
-
-## 🗂️ Key Concepts Covered
-
-| Concept | Description |
-|---|---|
-| Secret exposure | Hardcoded credentials in source code committed to a version control system |
-| Secret scanning | Automated detection of credential patterns in code using signature matching |
-| Push protection | Blocking a `git push` before secrets land in the remote repository |
-| Git history rewrite | Using `git filter-repo` to permanently remove secrets from all past commits |
-| Azure Key Vault | Cloud-hosted secure secret store with access policies and audit logging |
-| Runtime secret fetch | App retrieves credentials from Key Vault at startup — no secrets in code |
-| Least privilege | Granting only `get` and `list` permissions — not write, delete, or admin |
-| Pre-commit hook | A local Git hook that runs detect-secrets before any commit is created |
-| ISO 27001 mapping | A.9 Access Control, A.10 Cryptography, A.12 Operations Security |
-| NIST CSF mapping | Identify (ID.AM), Protect (PR.AC, PR.DS), Detect (DE.CM), Respond (RS.AN) |
-
----
-
+--
 ## 🔗 Tools & References
 
 - [Azure Key Vault Documentation](https://learn.microsoft.com/en-us/azure/key-vault/)
