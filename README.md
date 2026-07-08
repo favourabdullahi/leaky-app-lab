@@ -56,7 +56,7 @@ python --version     # 3.x
 ```
 
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 leaky-app-lab/
@@ -94,7 +94,7 @@ leaky-app-lab/
 
 ---
 
-## 📖 Complete Step-by-Step Walkthrough
+##  Complete Step-by-Step Walkthrough
 
 ---
 
@@ -131,7 +131,7 @@ git commit -m "initial app setup"
 ```
 <img width="538" height="290" alt="image" src="https://github.com/user-attachments/assets/9b7b5156-3e5a-434f-abbd-c1ed8230ff27" />
 
-> ✅ **Step 1 Complete** — fake fintech app created with 4 exposed credentials representing a Paystack key, database password, Azure storage key, and JWT secret.
+>  **Step 1 Complete** — fake fintech app created with 4 exposed credentials representing a Paystack key, database password, Azure storage key, and JWT secret.
 
 ---
 
@@ -165,7 +165,7 @@ git commit -m "initial app setup"
 7. You will be redirected back to GitGuardian — repo now appears under Perimeter
 <img width="345" height="302" alt="image" src="https://github.com/user-attachments/assets/e90cf167-7f06-411e-b1d6-ee3814f2b321" />
 
-> ✅ **Step 2 Complete** — code is on GitHub, Push Protection is active, GitGuardian is connected and monitoring the repository.
+>  **Step 2 Complete** — code is on GitHub, Push Protection is active, GitGuardian is connected and monitoring the repository.
 
 ---
 
@@ -204,7 +204,7 @@ Go to **Internal monitoring → Internal secret incidents** in the left sidebar.
 <img width="696" height="288" alt="image" src="https://github.com/user-attachments/assets/a1389b88-d9c7-408e-9bb6-4a994512b8b6" />
 
 
-> ✅ **Step 3 Complete** — GitGuardian detected 2 incidents from `app.js`. Screenshot the incidents page as evidence. This proves the scanner flags secrets before they can cause damage.
+> **Step 3 Complete** — GitGuardian detected 2 incidents from `app.js`. Screenshot the incidents page as evidence. This proves the scanner flags secrets before they can cause damage.
 
 ---
 
@@ -230,7 +230,7 @@ git push
 
 > In a real scenario, immediately rotate the compromised key in your Paystack dashboard — generate a new one and store the new value. The old key must be considered permanently compromised from the moment it was pushed.
 
-> ✅ **Step 4 Complete** — no credentials remain in the codebase. Git history has been rewritten to remove the secret values.
+>  **Step 4 Complete** — no credentials remain in the codebase. Git history has been rewritten to remove the secret values.
 
 ---
 
@@ -275,7 +275,7 @@ az keyvault secret list --vault-name leaky-app-vault-001 -o table
 ```
 <img width="786" height="202" alt="image" src="https://github.com/user-attachments/assets/3b5387a5-e34d-4983-b516-41c591a4bdaf" />
 
-> ✅ **Step 5 Complete** — all 3 secrets stored in Azure Key Vault. Access policy grants only `get` and `list` permissions — no write, delete, or admin access.
+>  **Step 5 Complete** — all 3 secrets stored in Azure Key Vault. Access policy grants only `get` and `list` permissions — no write, delete, or admin access.
 
 ---
 
@@ -294,7 +294,7 @@ az keyvault secret list --vault-name leaky-app-vault-001 -o table
 
 > `DefaultAzureCredential` automatically uses your active `az login` session in development and a Managed Identity in production — no credentials needed in the code at all.
 
-> ✅ **Step 6 Complete** — the app now resolves all credentials dynamically from Azure Key Vault at runtime. Zero secrets in the codebase.
+>  **Step 6 Complete** — the app now resolves all credentials dynamically from Azure Key Vault at runtime. Zero secrets in the codebase.
 
 ---
 
@@ -316,7 +316,7 @@ grep -rn "sk_live\|password\|secret\|api_key" . \
 <img width="944" height="172" alt="image" src="https://github.com/user-attachments/assets/8f627320-1c4d-441e-ad33-0bcb6d3c8ab3" />
 
 
-> ✅ **Step 7 Complete** — grep returns nothing (no secrets in source), and the app successfully retrieves credentials from Key Vault at runtime.
+>  **Step 7 Complete** — grep returns nothing (no secrets in source), and the app successfully retrieves credentials from Key Vault at runtime.
 
 ---
 
@@ -344,7 +344,7 @@ chmod +x .husky/pre-commit
 <img width="645" height="298" alt="image" src="https://github.com/user-attachments/assets/3d4f38e6-bfde-4d9e-9bc9-cca8b1b32d0a" />
 
 
-> ✅ **Step 8 Complete** — any future commit containing a secret pattern is automatically blocked at the developer's machine before it can reach GitHub.
+> **Step 8 Complete** — any future commit containing a secret pattern is automatically blocked at the developer's machine before it can reach GitHub.
 
 ---
 
@@ -365,12 +365,12 @@ az monitor diagnostic-settings create \
 
 This logs every read, write, and access attempt on the Key Vault to Azure Monitor — useful for detecting unusual access patterns.
 
-> ✅ **Step 9 Complete** — security team will receive immediate notifications whenever a new secret exposure is detected in any future commit or push.
+>  **Step 9 Complete** — security team will receive immediate notifications whenever a new secret exposure is detected in any future commit or push.
 <img width="774" height="300" alt="image" src="https://github.com/user-attachments/assets/5d997a11-4c96-44a1-8f31-a0bf768fb1a2" />
 
 ---
 
-## ✅ Final Success Check
+##  Final Success Check
 
 Run all three verification checks to confirm the lab is fully complete:
 
